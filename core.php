@@ -10,7 +10,7 @@ class Core_Controller {
 	{
 		self::$instance =& $this;
 
-		include("config.php");
+		include("config/config.php");
 		$this->config = $config;
 	}
 
