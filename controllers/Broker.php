@@ -92,4 +92,10 @@ class Broker extends Core_Controller {
 		}
 
 	}
+
+	function userinfo($uid, $fname)
+	{
+		echo "uid => ".$uid."<br>";
+		echo "fname => ".$fname."<br>";
+	}
 }

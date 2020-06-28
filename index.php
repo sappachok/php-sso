@@ -20,6 +20,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
     $r->addRoute('GET', '/php-sso/broker/login', 'broker/login');
     $r->addRoute('POST', '/php-sso/broker/login', 'broker/login');
     $r->addRoute('GET', '/php-sso/broker/logout', 'broker/logout');
+    $r->addRoute('GET', '/php-sso/userinfo/{uid}/{name}', 'broker/userinfo/$uid/$name');
     // {id} must be a number (\d+)
     //$r->addRoute('GET', '/sso/{id:\d+}', 'get_user_handler');
     // The /{title} suffix is optional
@@ -59,7 +60,22 @@ switch ($routeInfo[0]) {
 		$ex = explode('/',$handler);
 
 		if(is_array($ex)) {
-			$controller[$ex[0]]->$ex[1]();
+			foreach($vars as $ind => $val)  {
+				$buffer_params['$'.$ind] = $val;
+			}
+
+			$params = array();
+			for($i=2; $i<sizeof($ex); $i++) {
+				if(!empty($buffer_params[$ex[$i]])) {
+					$params[] = $buffer_params[$ex[$i]];
+				}
+			}
+
+			if($params) {
+				call_user_func_array(array($controller[$ex[0]], $ex[1]), $params);
+			} else {
+				$controller[$ex[0]]->$ex[1]();
+			}
 		} else {
 			$controller[$handler]->index();
 		}
